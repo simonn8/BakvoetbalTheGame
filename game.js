@@ -44,7 +44,7 @@ let gameState = STATE_TITLE;
 
 // --- Player & Score Tracker ---
 let player1Name = 'TEAM STIEN';
-let player2Name = 'TEAM MARGOT';
+let player2Name = 'TEAM MARGAUX';
 let p1Score = []; // array of results: 'goal' or 'miss'
 let p2Score = []; // array of results: 'goal' or 'miss'
 let currentRound = 0; // 0 to 4 (5 rounds total)
@@ -52,14 +52,14 @@ let activeKicker = 1; // 1 = Team 1 shoots (against P2 Goalie), 2 = Team 2 shoot
 let totalAttempts = 5;
 
 // Selected Goalies
-let p1Goalie = 'stien'; // 'stien', 'margot', or 'beer'
-let p2Goalie = 'margot';
+let p1Goalie = 'stien'; // 'stien', 'margaux', or 'beer'
+let p2Goalie = 'margaux';
 let charSelectState = 'p1'; // 'p1' selecting, then 'p2' selecting
 let charSelectHoverIndex = 0;
 
 const CHARACTERS = [
     { id: 'stien', name: 'STIEN', reach: '8/10', speed: '7/10', beerPower: '9/10', color: '#00f0ff' },
-    { id: 'margot', name: 'MARGOT', reach: '9/10', speed: '8/10', beerPower: '7/10', color: '#ff007f' },
+    { id: 'margaux', name: 'MARGAUX', reach: '9/10', speed: '8/10', beerPower: '7/10', color: '#ff007f' },
     { id: 'beer', name: 'BAK BIER', reach: '6/10', speed: '6/10', beerPower: '99/10', color: '#ffdf00' }
 ];
 
@@ -107,18 +107,18 @@ let imagesLoaded = 0;
 const totalImages = 6;
 const assets = {
     stien: document.getElementById('img-stien'),
-    margot: document.getElementById('img-margot'),
+    margaux: document.getElementById('img-margaux'),
     stienHead: document.getElementById('img-stien-head'),
-    margotHead: document.getElementById('img-margot-head'),
+    margauxHead: document.getElementById('img-margaux-head'),
     goal: document.getElementById('img-goal'),
     logo: document.getElementById('img-logo')
 };
 
 // Offscreen canvases for dynamically pixelated goalie sprites
 let stienPixelCanvas = null;
-let margotPixelCanvas = null;
+let margauxPixelCanvas = null;
 let stienHeadPixelCanvas = null;
-let margotHeadPixelCanvas = null;
+let margauxHeadPixelCanvas = null;
 
 // Confetti array for Game Over celebration
 let confetti = [];
@@ -401,9 +401,9 @@ function prePixelateImages() {
     const headScale = 0.08;
     
     stienPixelCanvas = pixelateImageToCanvas(assets.stien, bodyScale);
-    margotPixelCanvas = pixelateImageToCanvas(assets.margot, bodyScale);
+    margauxPixelCanvas = pixelateImageToCanvas(assets.margaux, bodyScale);
     stienHeadPixelCanvas = pixelateImageToCanvas(assets.stienHead, headScale);
-    margotHeadPixelCanvas = pixelateImageToCanvas(assets.margotHead, headScale);
+    margauxHeadPixelCanvas = pixelateImageToCanvas(assets.margauxHead, headScale);
 }
 
 const loadedImages = new Set();
@@ -416,17 +416,17 @@ function checkImageLoaded(id) {
 }
 
 assets.stien.onload = () => checkImageLoaded('stien');
-assets.margot.onload = () => checkImageLoaded('margot');
+assets.margaux.onload = () => checkImageLoaded('margaux');
 assets.stienHead.onload = () => checkImageLoaded('stienHead');
-assets.margotHead.onload = () => checkImageLoaded('margotHead');
+assets.margauxHead.onload = () => checkImageLoaded('margauxHead');
 assets.goal.onload = () => checkImageLoaded('goal');
 assets.logo.onload = () => checkImageLoaded('logo');
 
 // Safe fallbacks
 if (assets.stien.complete) checkImageLoaded('stien');
-if (assets.margot.complete) checkImageLoaded('margot');
+if (assets.margaux.complete) checkImageLoaded('margaux');
 if (assets.stienHead.complete) checkImageLoaded('stienHead');
-if (assets.margotHead.complete) checkImageLoaded('margotHead');
+if (assets.margauxHead.complete) checkImageLoaded('margauxHead');
 if (assets.goal.complete) checkImageLoaded('goal');
 if (assets.logo.complete) checkImageLoaded('logo');
 
@@ -524,8 +524,8 @@ function draw2DGoalie(type, goalieState, scaleX, scaleY) {
     let gloveColor = '#ffcc00';
     let shortsColor = '#111111';
     
-    if (type === 'margot') {
-        jerseyColor = '#ff007f'; // Pink for Margot
+    if (type === 'margaux') {
+        jerseyColor = '#ff007f'; // Pink for Margaux
         shortsColor = '#220022';
         gloveColor = '#39ff14'; // Neon Green
     }
@@ -605,8 +605,8 @@ function draw2DGoalie(type, goalieState, scaleX, scaleY) {
         ctx.fillRect(handRX - 18, handRY + 18, 20, 16);
         
         // Dynamic pixelated face
-        const headImg = (type === 'margot') ? assets.margotHead : assets.stienHead;
-        const pixelCanvas = (type === 'margot') ? margotHeadPixelCanvas : stienHeadPixelCanvas;
+        const headImg = (type === 'margaux') ? assets.margauxHead : assets.stienHead;
+        const pixelCanvas = (type === 'margaux') ? margauxHeadPixelCanvas : stienHeadPixelCanvas;
         
         if (pixelCanvas) {
             ctx.drawImage(pixelCanvas, -25, headY, 50, 55);
@@ -853,8 +853,8 @@ function drawScoreboard() {
     const goalie1 = CHARACTERS.find(c => c.id === p1Goalie).name;
     const goalie2 = CHARACTERS.find(c => c.id === p2Goalie).name;
     
-    drawRetroText(`${player1Name} (${goalie1})`, 10, 25, 8, activeKicker === 1 ? '#ffdf00' : '#ffffff', 'left');
-    drawRetroText(`(${goalie2}) ${player2Name}`, 790, 25, 8, activeKicker === 2 ? '#ffdf00' : '#ffffff', 'right');
+    drawRetroText(`${player1Name} (${goalie1})`, 10, 25, 11, activeKicker === 1 ? '#ffdf00' : '#ffffff', 'left');
+    drawRetroText(`(${goalie2}) ${player2Name}`, 790, 25, 11, activeKicker === 2 ? '#ffdf00' : '#ffffff', 'right');
     
     const maxSpacing = 20;
     const spacing = Math.min(maxSpacing, Math.floor(190 / totalAttempts));
@@ -867,7 +867,7 @@ function drawScoreboard() {
     }
     
     const tryText = totalAttempts > 5 ? `SUDDEN DEATH TRY ${currentRound + 1}` : `TRY ${currentRound + 1}/${totalAttempts}`;
-    drawRetroText(tryText, CANVAS_WIDTH/2, 25, totalAttempts > 5 ? 7 : 8, '#ff9900', 'center');
+    drawRetroText(tryText, CANVAS_WIDTH/2, 25, totalAttempts > 5 ? 9 : 11, '#ff9900', 'center');
 }
 
 function drawScoreIcon(x, y, status) {
@@ -936,15 +936,15 @@ function handleTitleScreen() {
     }
     
     const color = Math.floor(Date.now() / 400) % 2 === 0 ? '#ffdf00' : '#ffffff';
-    drawRetroText("HAPPY BIRTHDAY STIEN & MARGOT!", CANVAS_WIDTH/2, 340, 10, color);
+    drawRetroText("HAPPY BIRTHDAY STIEN & MARGAUX!", CANVAS_WIDTH/2, 340, 14, color);
     
     if (Math.floor(Date.now() / 600) % 2 === 0) {
-        drawRetroText("PRESS SPACE TO PLAY", CANVAS_WIDTH/2, 420, 12, '#39ff14');
+        drawRetroText("PRESS SPACE TO PLAY", CANVAS_WIDTH/2, 420, 18, '#39ff14');
     }
     
-    drawRetroText("2-PLAYER BIRTHDAY SHOWDOWN", CANVAS_WIDTH/2, 490, 8, '#aaa');
-    drawRetroText("USE [SPACE] OR VIRTUAL BUTTONS TO SHOOT", CANVAS_WIDTH/2, 520, 8, '#888');
-    drawRetroText("ACTIVE WORKSPACE: ANIMATED GOAL NET & BODIES", CANVAS_WIDTH/2, 550, 7, '#666');
+    drawRetroText("2-PLAYER BIRTHDAY SHOWDOWN", CANVAS_WIDTH/2, 490, 11, '#aaa');
+    drawRetroText("USE [SPACE] OR VIRTUAL BUTTONS TO SHOOT", CANVAS_WIDTH/2, 520, 11, '#888');
+    drawRetroText("ACTIVE WORKSPACE: ANIMATED GOAL NET & BODIES", CANVAS_WIDTH/2, 550, 10, '#666');
 }
 
 function handleTeamSelectScreen() {
@@ -953,7 +953,7 @@ function handleTeamSelectScreen() {
     
     const titleText = charSelectState === 'p1' ? "PLAYER 1: SELECT GOALIE" : "PLAYER 2: SELECT GOALIE";
     const titleColor = charSelectState === 'p1' ? '#00f0ff' : '#ff007f';
-    drawRetroText(titleText, CANVAS_WIDTH/2, 80, 14, titleColor);
+    drawRetroText(titleText, CANVAS_WIDTH/2, 80, 20, titleColor);
     
     // Draw 3 selectable goalie cards
     for (let i = 0; i < CHARACTERS.length; i++) {
@@ -989,7 +989,7 @@ function handleTeamSelectScreen() {
         }
         
         // Character Info
-        drawRetroText(char.name, x + w/2, y + 30, 10, char.color);
+        drawRetroText(char.name, x + w/2, y + 30, 14, char.color);
         
         // Goalie body preview in card
         ctx.save();
@@ -1022,8 +1022,8 @@ function handleTeamSelectScreen() {
             ctx.fillRect(pHandRX - 18, -22, 20, 16);
             
             // Head preview
-            const pHeadImg = char.id === 'stien' ? assets.stienHead : assets.margotHead;
-            const pPixel = char.id === 'stien' ? stienHeadPixelCanvas : margotHeadPixelCanvas;
+            const pHeadImg = char.id === 'stien' ? assets.stienHead : assets.margauxHead;
+            const pPixel = char.id === 'stien' ? stienHeadPixelCanvas : margauxHeadPixelCanvas;
             if (pPixel) {
                 ctx.drawImage(pPixel, -25, pHeadY, 50, 55);
             } else if (pHeadImg && pHeadImg.complete) {
@@ -1033,14 +1033,14 @@ function handleTeamSelectScreen() {
         ctx.restore();
         
         // Stats
-        drawRetroText(`REACH: ${char.reach}`, x + w/2, y + 250, 7, '#aaa');
-        drawRetroText(`SPEED: ${char.speed}`, x + w/2, y + 270, 7, '#aaa');
-        drawRetroText(`BEER: ${char.beerPower}`, x + w/2, y + 290, 7, '#ffcc00');
+        drawRetroText(`REACH: ${char.reach}`, x + w/2, y + 250, 9.5, '#aaa');
+        drawRetroText(`SPEED: ${char.speed}`, x + w/2, y + 270, 9.5, '#aaa');
+        drawRetroText(`BEER: ${char.beerPower}`, x + w/2, y + 290, 9.5, '#ffcc00');
     }
     
     // Help
-    drawRetroText("CLICK TO SELECT OR PRESS SPACE TO LOCK", CANVAS_WIDTH/2, 500, 8, '#ffffff');
-    drawRetroText("USE JOYSTICK OR LEFT/RIGHT ARROWS TO MOVE CURSOR", CANVAS_WIDTH/2, 530, 7, '#666');
+    drawRetroText("CLICK TO SELECT OR PRESS SPACE TO LOCK", CANVAS_WIDTH/2, 500, 12, '#ffffff');
+    drawRetroText("USE JOYSTICK OR LEFT/RIGHT ARROWS TO MOVE CURSOR", CANVAS_WIDTH/2, 530, 10, '#666');
 }
 
 function handleReadyScreen() {
@@ -1072,12 +1072,12 @@ function handleReadyScreen() {
     const goalieCharName = CHARACTERS.find(c => c.id === defendingGoalie).name;
     const color = activeKicker === 1 ? '#00f0ff' : '#ff007f';
     
-    drawRetroText("GET READY!", CANVAS_WIDTH/2, 240, 16, '#ffdf00');
-    drawRetroText(`${shooter} KICKS!`, CANVAS_WIDTH/2, 290, 12, color);
-    drawRetroText(`GOALIE: ${goalieCharName}`, CANVAS_WIDTH/2, 330, 10, '#ffffff');
+    drawRetroText("GET READY!", CANVAS_WIDTH/2, 240, 24, '#ffdf00');
+    drawRetroText(`${shooter} KICKS!`, CANVAS_WIDTH/2, 290, 18, color);
+    drawRetroText(`GOALIE: ${goalieCharName}`, CANVAS_WIDTH/2, 330, 14, '#ffffff');
     
     if (Math.floor(Date.now() / 400) % 2 === 0) {
-        drawRetroText("PRESS SPACE TO AIM", CANVAS_WIDTH/2, 370, 8, '#39ff14');
+        drawRetroText("PRESS SPACE TO AIM", CANVAS_WIDTH/2, 370, 11, '#39ff14');
     }
 }
 
@@ -1105,7 +1105,7 @@ function handleAimH() {
     }
     
     drawAimCursor();
-    drawRetroText("LOCK HORIZONTAL TARGET", CANVAS_WIDTH/2, 80, 8, '#00f0ff');
+    drawRetroText("LOCK HORIZONTAL TARGET", CANVAS_WIDTH/2, 80, 12, '#00f0ff');
 }
 
 function handleAimV() {
@@ -1130,7 +1130,7 @@ function handleAimV() {
     }
     
     drawAimCursor();
-    drawRetroText("LOCK VERTICAL TARGET", CANVAS_WIDTH/2, 80, 8, '#ff007f');
+    drawRetroText("LOCK VERTICAL TARGET", CANVAS_WIDTH/2, 80, 12, '#ff007f');
 }
 
 function handleKickState() {
@@ -1299,7 +1299,7 @@ function handleResultScreen() {
     ctx.lineWidth = 4;
     ctx.strokeRect(-5, 220, CANVAS_WIDTH + 10, 140);
     
-    drawRetroText(resultBannerText, CANVAS_WIDTH/2, 290, 22, resultBannerColor);
+    drawRetroText(resultBannerText, CANVAS_WIDTH/2, 290, 30, resultBannerColor);
 }
 
 function advanceRound() {
@@ -1352,7 +1352,7 @@ function handleGameOverScreen() {
     
     drawConfetti();
     
-    drawRetroText("MATCH OVER!", CANVAS_WIDTH/2, 60, 20, '#ffdf00');
+    drawRetroText("MATCH OVER!", CANVAS_WIDTH/2, 60, 30, '#ffdf00');
     
     ctx.fillStyle = '#1b1b26';
     ctx.fillRect(150, 110, 500, 150);
@@ -1363,11 +1363,11 @@ function handleGameOverScreen() {
     const p1Goals = p1Score.filter(s => s === 'goal').length;
     const p2Goals = p2Score.filter(s => s === 'goal').length;
     
-    drawRetroText(player1Name, 260, 140, 10, '#00f0ff');
-    drawRetroText(player2Name, 540, 140, 10, '#ff007f');
-    drawRetroText(`${p1Goals}`, 260, 195, 28, '#00f0ff');
+    drawRetroText(player1Name, 260, 140, 14, '#00f0ff');
+    drawRetroText(player2Name, 540, 140, 14, '#ff007f');
+    drawRetroText(`${p1Goals}`, 260, 195, 38, '#00f0ff');
     drawRetroText("-", CANVAS_WIDTH/2, 195, 24, '#ffffff');
-    drawRetroText(`${p2Goals}`, 540, 195, 28, '#ff007f');
+    drawRetroText(`${p2Goals}`, 540, 195, 38, '#ff007f');
     
     let winnerText = "";
     let winnerColor = "";
@@ -1381,7 +1381,7 @@ function handleGameOverScreen() {
         winnerText = "IT'S A DRAW!";
         winnerColor = '#ffdf00';
     }
-    drawRetroText(winnerText, CANVAS_WIDTH/2, 300, 16, winnerColor);
+    drawRetroText(winnerText, CANVAS_WIDTH/2, 300, 22, winnerColor);
     
     ctx.fillStyle = '#222230';
     ctx.fillRect(100, 340, 600, 140);
@@ -1389,16 +1389,16 @@ function handleGameOverScreen() {
     ctx.lineWidth = 2;
     ctx.strokeRect(100, 340, 600, 140);
     
-    drawRetroText("★ BIRTHDAY CARD ★", CANVAS_WIDTH/2, 370, 9, '#ffdf00');
-    drawRetroText("Fijne verjaardag Stien en Margot!", CANVAS_WIDTH/2, 405, 8, '#ffffff');
-    drawRetroText("Keep scoring and drinking crates of beer!", CANVAS_WIDTH/2, 435, 7, '#39ff14');
-    drawRetroText("Enjoy your awesome birthday soccer showdown!", CANVAS_WIDTH/2, 455, 7, '#00f0ff');
+    drawRetroText("★ BIRTHDAY CARD ★", CANVAS_WIDTH/2, 370, 12, '#ffdf00');
+    drawRetroText("Fijne verjaardag Stien en Margaux!", CANVAS_WIDTH/2, 405, 11, '#ffffff');
+    drawRetroText("Keep scoring and drinking crates of beer!", CANVAS_WIDTH/2, 435, 9, '#39ff14');
+    drawRetroText("Enjoy your awesome birthday soccer showdown!", CANVAS_WIDTH/2, 455, 9, '#00f0ff');
     
     if (Math.floor(Date.now() / 500) % 2 === 0) {
-        drawRetroText("PRESS SPACE TO REMATCH", CANVAS_WIDTH/2, 530, 10, '#ffffff');
+        drawRetroText("PRESS SPACE TO REMATCH", CANVAS_WIDTH/2, 530, 14, '#ffffff');
     }
     
-    drawRetroText("BAKVOETBAL THE GAME • 2026", CANVAS_WIDTH/2, 570, 7, '#666');
+    drawRetroText("BAKVOETBAL THE GAME • 2026", CANVAS_WIDTH/2, 570, 9, '#666');
 }
 
 // --- Input & Character Selection Logic ---
@@ -1466,13 +1466,13 @@ function handleShootAction() {
         }
         
         // Semi-predictive AI: Guess rate depends on Goalie character reach stats
-        // Margot (Reach 9): 32% guess rate -> ~47% score rate
+        // Margaux (Reach 9): 32% guess rate -> ~47% score rate
         // Stien (Reach 8): 28% guess rate -> ~50% score rate
         // Beer Goalie (Reach 6): 20% guess rate -> ~55% score rate
         // Average guess rate (~28%) yields an overall 1-in-2 (50%) scoring chance
         const activeGoalieChar = (activeKicker === 1) ? p2Goalie : p1Goalie;
         let guessRate = 0.28;
-        if (activeGoalieChar === 'margot') {
+        if (activeGoalieChar === 'margaux') {
             guessRate = 0.32;
         } else if (activeGoalieChar === 'beer') {
             guessRate = 0.20;

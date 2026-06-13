@@ -1,7 +1,7 @@
 {
   "name": "bakvoetbal-the-game",
   "version": "1.0.0",
-  "description": "Retro 8-bit penalty shootout browser game celebrating Stien & Margot's birthdays",
+  "description": "Retro 8-bit penalty shootout browser game celebrating Stien & Margaux's birthdays",
   "main": "index.html",
   "scripts": {
     "start": "npx -y http-server -p 8080"
