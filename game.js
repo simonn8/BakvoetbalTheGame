@@ -1515,12 +1515,61 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
+// Touch listeners for instant mobile response
+btnShoot.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    btnShoot.classList.add('active');
+    setTimeout(() => btnShoot.classList.remove('active'), 150);
+    handleShootAction();
+}, { passive: false });
+
+btnAudio.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    toggleAudio();
+}, { passive: false });
+
 // Virtual button shoot click
 btnShoot.addEventListener('click', () => {
     btnShoot.classList.add('active');
     setTimeout(() => btnShoot.classList.remove('active'), 150);
     handleShootAction();
 });
+
+// Touch selection listener for mobile Canvas
+canvas.addEventListener('touchstart', (e) => {
+    if (gameState !== STATE_TEAM_SELECT) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    
+    const scaleX = CANVAS_WIDTH / rect.width;
+    const scaleY = CANVAS_HEIGHT / rect.height;
+    const canvasX = x * scaleX;
+    const canvasY = y * scaleY;
+    
+    for (let i = 0; i < CHARACTERS.length; i++) {
+        const cardX = 70 + (i * 230);
+        const cardY = 140;
+        const cardW = 200;
+        const cardH = 320;
+        
+        if (canvasX >= cardX && canvasX <= cardX + cardW &&
+            canvasY >= cardY && canvasY <= cardY + cardH) {
+            
+            if (charSelectState === 'p2' && p1Goalie === CHARACTERS[i].id) {
+                playTone(150, 0.2, 'sawtooth', 0.2);
+                return;
+            }
+            
+            playTone(440, 0.08, 'sine', 0.15);
+            charSelectHoverIndex = i;
+            handleShootAction();
+            break;
+        }
+    }
+}, { passive: false });
 
 // Click selection listener directly on Canvas
 canvas.addEventListener('click', (e) => {

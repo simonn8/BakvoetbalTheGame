@@ -43,7 +43,8 @@ body {
 
 /* Arcade Cabinet Container */
 .arcade-cabinet {
-    width: 900px;
+    width: 100%;
+    max-width: 900px;
     background: var(--cabinet-bg);
     border: 10px solid var(--cabinet-border);
     border-radius: 20px;
@@ -120,8 +121,9 @@ body {
 
 .crt-screen {
     position: relative;
-    width: 800px;
-    height: 600px;
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 4 / 3;
     background: var(--crt-bg);
     border: 20px solid #282830;
     border-radius: 35px;
@@ -432,13 +434,6 @@ body {
 
 /* Responsive adjustments */
 @media(max-width: 950px) {
-    .arcade-cabinet {
-        width: 100%;
-        max-width: 700px;
-    }
-    .crt-screen {
-        height: 450px;
-    }
     .marquee-text {
         font-size: 14px;
     }
@@ -457,4 +452,64 @@ body {
     .joystick-ball { width: 24px; height: 24px; left: 17px; }
     .arcade-btn { width: 44px; height: 44px; }
     .btn-top { width: 28px; height: 28px; }
+}
+
+@media(max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    .arcade-cabinet {
+        border-width: 6px;
+        border-radius: 12px;
+    }
+    .screen-container {
+        padding: 12px 18px;
+    }
+    .crt-screen {
+        border-width: 12px;
+        border-radius: 20px;
+    }
+}
+
+@media(max-width: 500px) {
+    .marquee {
+        height: 70px;
+    }
+    .marquee-text {
+        font-size: 11px;
+    }
+    .marquee-subtext {
+        font-size: 6px;
+        margin-top: 5px;
+    }
+    .screen-container {
+        padding: 6px 8px;
+    }
+    .crt-screen {
+        border-width: 8px;
+        border-radius: 12px;
+    }
+    .joystick-section, .center-instructions {
+        display: none;
+    }
+    .control-panel {
+        padding: 10px;
+        height: 90px;
+    }
+    .buttons-section {
+        width: 100%;
+        justify-content: space-around;
+        gap: 10px;
+    }
+    .arcade-btn {
+        width: 46px;
+        height: 46px;
+    }
+    .btn-top {
+        width: 30px;
+        height: 30px;
+    }
+    .btn-label {
+        font-size: 5px;
+    }
 }
