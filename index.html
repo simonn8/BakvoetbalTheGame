@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakvoetbal The Game - Birthday Edition</title>
+    <!-- Retro Pixel Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="arcade-cabinet">
+        <!-- Arcade Marquee Header -->
+        <div class="marquee">
+            <div class="marquee-text marquee-glow">★ HAPPY BIRTHDAY STIEN & MARGOT ★</div>
+            <div class="marquee-subtext">BAKVOETBAL: THE GAME</div>
+        </div>
+
+        <!-- Main Screen Area with CRT and Scanline overlays -->
+        <div class="screen-container">
+            <div class="crt-screen">
+                <div class="scanlines"></div>
+                <div class="crt-glare"></div>
+                
+                <!-- Game Canvas -->
+                <canvas id="gameCanvas" width="800" height="600"></canvas>
+            </div>
+        </div>
+
+        <!-- Arcade Control Panel -->
+        <div class="control-panel">
+            <div class="joystick-section">
+                <div class="joystick-label font-retro">MOVE</div>
+                <div class="joystick">
+                    <div class="joystick-base"></div>
+                    <div class="joystick-shaft"></div>
+                    <div class="joystick-ball"></div>
+                </div>
+            </div>
+            
+            <div class="center-instructions font-retro">
+                <p>INSERT COIN TO PLAY</p>
+                <div class="coin-slots">
+                    <div class="coin-slot">
+                        <div class="coin-insert"></div>
+                        <div class="coin-label">25¢</div>
+                    </div>
+                    <div class="coin-slot">
+                        <div class="coin-insert"></div>
+                        <div class="coin-label">25¢</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons-section">
+                <div class="button-group">
+                    <button id="btn-shoot" class="arcade-btn red-btn">
+                        <span class="btn-top"></span>
+                    </button>
+                    <span class="btn-label font-retro">SHOOT / LOCK</span>
+                </div>
+                <div class="button-group">
+                    <button id="btn-audio" class="arcade-btn blue-btn">
+                        <span class="btn-top"></span>
+                    </button>
+                    <span id="audio-label" class="btn-label font-retro">SOUND ON</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cabinet-footer font-retro">
+            © 2026 BAKVOETBAL ENTERTAINMENT SYSTEM
+        </div>
+    </div>
+
+    <!-- Hidden image elements to pre-load assets -->
+    <div style="display:none;">
+        <img id="img-stien" src="Stien.png" alt="Stien">
+        <img id="img-margot" src="Margot.png" alt="Margot">
+        <img id="img-stien-head" src="Stien-head.png" alt="Stien Head">
+        <img id="img-margot-head" src="Margot-head.png" alt="Margot Head">
+        <img id="img-goal" src="Bakvoetbal-goal.png" alt="Goal">
+        <img id="img-logo" src="Bakvoetbal-logo.png" alt="Logo">
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

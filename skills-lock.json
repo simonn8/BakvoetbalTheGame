@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "game-development": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/game-development/SKILL.md",
+      "computedHash": "a5a1b37d86be11134798abc1558f964ca4fc538fc56ac661f779a90a54e338ca"
+    }
+  }
+}
