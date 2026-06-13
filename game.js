@@ -134,6 +134,30 @@ function initAudio() {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 }
 
+// Mobile Web Audio API Unlocker: iOS/Android browsers suspend AudioContext until a direct touch interaction
+function unlockAudioOnMobile() {
+    initAudio();
+    if (audioCtx) {
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume().then(() => {
+                console.log("Web Audio Context unlocked successfully!");
+                removeMobileUnlockListeners();
+            }).catch(err => console.log("Failed to resume context:", err));
+        } else {
+            removeMobileUnlockListeners();
+        }
+    }
+}
+
+function removeMobileUnlockListeners() {
+    window.removeEventListener('touchstart', unlockAudioOnMobile);
+    window.removeEventListener('click', unlockAudioOnMobile);
+}
+
+// Bind direct global touch/click to unlock Web Audio on mobile
+window.addEventListener('touchstart', unlockAudioOnMobile, { passive: true });
+window.addEventListener('click', unlockAudioOnMobile, { passive: true });
+
 function playTone(freq, duration, type = 'sine', volume = 0.1, delay = 0) {
     if (!audioEnabled || !audioCtx) return;
     
