@@ -473,7 +473,9 @@ body {
 
 @media(max-width: 500px) {
     .marquee {
-        height: 70px;
+        height: auto;
+        min-height: 80px;
+        padding: 12px 10px;
     }
     .marquee-text {
         font-size: 14px;
@@ -493,8 +495,9 @@ body {
         display: none;
     }
     .control-panel {
-        padding: 10px;
-        height: 90px;
+        padding: 12px 10px;
+        height: auto;
+        min-height: 100px;
     }
     .buttons-section {
         width: 100%;

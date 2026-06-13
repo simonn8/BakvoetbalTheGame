@@ -103,20 +103,17 @@ let goalieDiveZone = -1;
 let beerZone = -1; // random zone containing the beer crate obstacle in current round
 
 // --- Graphics & Asset Caching ---
-let imagesLoaded = 0;
 const totalImages = 6;
 const assets = {
     stien: document.getElementById('img-stien'),
-    margaux: document.getElementById('img-margaux'),
+    margaux: document.getElementById('img-margaux') || document.getElementById('img-margot'),
     stienHead: document.getElementById('img-stien-head'),
-    margauxHead: document.getElementById('img-margaux-head'),
+    margauxHead: document.getElementById('img-margaux-head') || document.getElementById('img-margot-head'),
     goal: document.getElementById('img-goal'),
     logo: document.getElementById('img-logo')
 };
 
-// Offscreen canvases for dynamically pixelated goalie sprites
-let stienPixelCanvas = null;
-let margauxPixelCanvas = null;
+// Offscreen canvases for dynamically pixelated goalie head sprites
 let stienHeadPixelCanvas = null;
 let margauxHeadPixelCanvas = null;
 
@@ -135,27 +132,42 @@ function initAudio() {
 }
 
 // Mobile Web Audio API Unlocker: iOS/Android browsers suspend AudioContext until a direct touch interaction
+function playSilence() {
+    if (!audioCtx) return;
+    try {
+        const buffer = audioCtx.createBuffer(1, 1, 22055);
+        const source = audioCtx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioCtx.destination);
+        source.start(0);
+    } catch (e) {
+        console.warn("Failed to play silence:", e);
+    }
+}
+
 function unlockAudioOnMobile() {
     initAudio();
     if (audioCtx) {
         if (audioCtx.state === 'suspended') {
             audioCtx.resume().then(() => {
                 console.log("Web Audio Context unlocked successfully!");
+                playSilence();
                 removeMobileUnlockListeners();
             }).catch(err => console.log("Failed to resume context:", err));
         } else {
+            playSilence();
             removeMobileUnlockListeners();
         }
     }
 }
 
 function removeMobileUnlockListeners() {
-    window.removeEventListener('touchstart', unlockAudioOnMobile);
+    window.removeEventListener('touchend', unlockAudioOnMobile);
     window.removeEventListener('click', unlockAudioOnMobile);
 }
 
 // Bind direct global touch/click to unlock Web Audio on mobile
-window.addEventListener('touchstart', unlockAudioOnMobile, { passive: true });
+window.addEventListener('touchend', unlockAudioOnMobile, { passive: true });
 window.addEventListener('click', unlockAudioOnMobile, { passive: true });
 
 function playTone(freq, duration, type = 'sine', volume = 0.1, delay = 0) {
@@ -294,7 +306,11 @@ function toggleAudio() {
         btnAudio.classList.remove('blue-btn');
         btnAudio.classList.add('red-btn');
         if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
+            audioCtx.resume().then(() => {
+                playSilence();
+            });
+        } else {
+            playSilence();
         }
         startMenuMusic();
     } else {
@@ -408,7 +424,7 @@ function triggerScreenShake(time, amount) {
 
 // --- Dynamic Pixelation Engine ---
 function pixelateImageToCanvas(sourceImg, scaleFactor) {
-    if (!sourceImg.complete || sourceImg.naturalWidth === 0) return null;
+    if (!sourceImg || !sourceImg.complete || sourceImg.naturalWidth === 0) return null;
     const w = Math.round(sourceImg.naturalWidth * scaleFactor);
     const h = Math.round(sourceImg.naturalHeight * scaleFactor);
     
@@ -420,39 +436,19 @@ function pixelateImageToCanvas(sourceImg, scaleFactor) {
     return pCanvas;
 }
 
-function prePixelateImages() {
-    const bodyScale = 0.07;
-    const headScale = 0.08;
-    
-    stienPixelCanvas = pixelateImageToCanvas(assets.stien, bodyScale);
-    margauxPixelCanvas = pixelateImageToCanvas(assets.margaux, bodyScale);
-    stienHeadPixelCanvas = pixelateImageToCanvas(assets.stienHead, headScale);
-    margauxHeadPixelCanvas = pixelateImageToCanvas(assets.margauxHead, headScale);
-}
-
-const loadedImages = new Set();
-function checkImageLoaded(id) {
-    loadedImages.add(id);
-    if (loadedImages.size === totalImages) {
-        prePixelateImages();
-        initNet();
+function getStienHeadPixelCanvas() {
+    if (!stienHeadPixelCanvas && assets.stienHead) {
+        stienHeadPixelCanvas = pixelateImageToCanvas(assets.stienHead, 0.08);
     }
+    return stienHeadPixelCanvas;
 }
 
-assets.stien.onload = () => checkImageLoaded('stien');
-assets.margaux.onload = () => checkImageLoaded('margaux');
-assets.stienHead.onload = () => checkImageLoaded('stienHead');
-assets.margauxHead.onload = () => checkImageLoaded('margauxHead');
-assets.goal.onload = () => checkImageLoaded('goal');
-assets.logo.onload = () => checkImageLoaded('logo');
-
-// Safe fallbacks
-if (assets.stien.complete) checkImageLoaded('stien');
-if (assets.margaux.complete) checkImageLoaded('margaux');
-if (assets.stienHead.complete) checkImageLoaded('stienHead');
-if (assets.margauxHead.complete) checkImageLoaded('margauxHead');
-if (assets.goal.complete) checkImageLoaded('goal');
-if (assets.logo.complete) checkImageLoaded('logo');
+function getMargauxHeadPixelCanvas() {
+    if (!margauxHeadPixelCanvas && assets.margauxHead) {
+        margauxHeadPixelCanvas = pixelateImageToCanvas(assets.margauxHead, 0.08);
+    }
+    return margauxHeadPixelCanvas;
+}
 
 // --- Goalie 2D Sprite Body Renderers ---
 function drawBeerCrateGoalieBody(ctx, bodyY, headY, handLX, handRX, handLY, handRY, goalieState) {
@@ -630,7 +626,7 @@ function draw2DGoalie(type, goalieState, scaleX, scaleY) {
         
         // Dynamic pixelated face
         const headImg = (type === 'margaux') ? assets.margauxHead : assets.stienHead;
-        const pixelCanvas = (type === 'margaux') ? margauxHeadPixelCanvas : stienHeadPixelCanvas;
+        const pixelCanvas = (type === 'margaux') ? getMargauxHeadPixelCanvas() : getStienHeadPixelCanvas();
         
         if (pixelCanvas) {
             ctx.drawImage(pixelCanvas, -25, headY, 50, 55);
@@ -1047,7 +1043,7 @@ function handleTeamSelectScreen() {
             
             // Head preview
             const pHeadImg = char.id === 'stien' ? assets.stienHead : assets.margauxHead;
-            const pPixel = char.id === 'stien' ? stienHeadPixelCanvas : margauxHeadPixelCanvas;
+            const pPixel = char.id === 'stien' ? getStienHeadPixelCanvas() : getMargauxHeadPixelCanvas();
             if (pPixel) {
                 ctx.drawImage(pPixel, -25, pHeadY, 50, 55);
             } else if (pHeadImg && pHeadImg.complete) {
@@ -1540,14 +1536,14 @@ window.addEventListener('keydown', (e) => {
 });
 
 // Touch listeners for instant mobile response
-btnShoot.addEventListener('touchstart', (e) => {
+btnShoot.addEventListener('touchend', (e) => {
     e.preventDefault();
     btnShoot.classList.add('active');
     setTimeout(() => btnShoot.classList.remove('active'), 150);
     handleShootAction();
 }, { passive: false });
 
-btnAudio.addEventListener('touchstart', (e) => {
+btnAudio.addEventListener('touchend', (e) => {
     e.preventDefault();
     toggleAudio();
 }, { passive: false });
@@ -1680,5 +1676,6 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// Launch loop
+// Initialize goal net mesh and start loop
+initNet();
 requestAnimationFrame(gameLoop);
